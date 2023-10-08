@@ -1,6 +1,7 @@
 import random
 from django.http import HttpResponse
 import logging
+from game_app.models import Coin
 
 logger = logging.getLogger(__name__)
 
@@ -13,8 +14,14 @@ CUBE_MAX = 6
 def eagle(request):
     game_list = ["орел", "решка"]
     response = random.choice(game_list)
+    coin = Coin(is_eagle=response)
+    coin.save()
     logger.info(f"Монета выпала стороной: {response}")
     return HttpResponse(response)
+
+
+def show_coins(request, n: int):
+    return HttpResponse(f"{Coin.counter(n)}")
 
 
 def cube(request):
