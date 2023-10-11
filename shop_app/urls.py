@@ -33,4 +33,9 @@ urlpatterns = [
         views.edit_good_id_in_order,
         name="edit_good_id_in_order",
     ),
+    path(
+        "client/get_goods/<int:client_id>/<int:days>",
+        views.get_client_goods,
+        name="get_client_goods",
+    ),
 ]

@@ -1,0 +1,10 @@
+{% extends 'shop_app/base.html' %}
+
+{% block content %}
+<p>Список клиентов:</p>
+{% for client in clients %}
+<p>
+    <a href="{% url 'get_client_goods' client.id %}">Имя клиента: {{ client.name }}</a>
+</p>
+{% endfor %}
+{% endblock %}

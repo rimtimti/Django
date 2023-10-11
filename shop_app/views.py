@@ -1,11 +1,23 @@
+import datetime
 from django.http import HttpResponse
+from django.shortcuts import render
 from shop_app.models import Client, Good, Order
 
 
 def get_clients(request):
     clients = Client.objects.all()
-    context = "<br>".join(str(client) + "<br>" for client in clients)
-    return HttpResponse(context)
+    context = {"clients": clients}
+    return render(request, "shop_app/clients.html", context=context)
+    # context = "<br>".join(str(client) + "<br>" for client in clients)
+    # return HttpResponse(context)
+
+
+def get_client_goods(request, client_id: int, days: int):
+    repiod = datetime.date.today() - datetime.timedelta(days=days)
+    client = Client.objects.get(id=client_id)
+    orders = Order.objects.filter(client_id=client_id, create_at__gte=repiod)
+    context = {"count_days": days, "client": client, "orders": orders}
+    return render(request, "shop_app/client_goods.html", context=context)
 
 
 def get_goods(request):

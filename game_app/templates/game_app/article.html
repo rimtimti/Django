@@ -1,0 +1,13 @@
+{% extends 'game_app/base.html' %}
+
+{% block title %} Title {% endblock %}
+
+{% block content %}
+{% for article in articles %}
+{% if article.is_published %}
+<p><a href="{% url 'detail_article' article.id %}">{{ article.title }}</a></p>
+{% else %}
+<p>{{ article.title }}</p>
+{% endif %}
+{% endfor %}
+{% endblock %}

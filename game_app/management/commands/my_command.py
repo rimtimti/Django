@@ -1,6 +1,6 @@
 import random
 from django.core.management.base import BaseCommand
-from game_app.models import Author, Article
+from game_app.models import Author, Article, Comment
 
 
 class Command(BaseCommand):
@@ -27,5 +27,14 @@ class Command(BaseCommand):
                     description=f"description{j}",
                     author_id=author,
                     category=f"category{i}",
+                    is_published=random.randint(0, 1),
                 )
                 article.save()
+                for k in range(1, count + 1):
+                    comment = Comment(
+                        description=f"article{k}",
+                        author=author,
+                        article=article,
+                        # change_at=f"{random.randint(2023,2024)}-{random.randint(10,11)}-{random.randint(8,10)}",
+                    )
+                    comment.save()

@@ -1,19 +1,24 @@
-from django.http import HttpResponse
-import logging
+# from django.http import HttpResponse
+# import logging
 
-logger = logging.getLogger(__name__)
+from django.shortcuts import render
+
+# logger = logging.getLogger(__name__)
 
 
 def index(request):
-    html = (
-        "<h1>Привет! Это мой первый сайт на Django!</h1>"
-        "<p>Стартовая страница, пока в процессе написания....</p>"
-    )
-    logger.info(f"Показана информация: {html}")
-    return HttpResponse(html)
+    context = {
+        "text": "Привет! Это мой первый сайт на Django!\
+        Стартовая страница, пока в процессе написания...."
+    }
+    # logger.info(f'Показана информация: {html}')
+    return render(request, "blog_app/index.html", context=context)
 
 
 def about(request):
-    html = "<h1>Обо мне</h1>" "<p>Меня зовут Иван. Я начинающий Python-программист.</p>"
-    logger.info(f"Показана информация: {html}")
-    return HttpResponse(html)
+    context = {
+        "text": "Обо мне \
+               Меня зовут Иван. Я начинающий Python-программист."
+    }
+    # logger.info(f'Показана информация: {html}')
+    return render(request, "blog_app/about.html", context=context)
