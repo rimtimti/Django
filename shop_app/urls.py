@@ -38,4 +38,5 @@ urlpatterns = [
         views.get_client_goods,
         name="get_client_goods",
     ),
+    path("add_good/", views.add_good, name="add_good"),
 ]

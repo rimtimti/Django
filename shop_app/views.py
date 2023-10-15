@@ -2,14 +2,17 @@ import datetime
 from django.http import HttpResponse
 from django.shortcuts import render
 from shop_app.models import Client, Good, Order
+from .forms import GoodForm
+
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def get_clients(request):
     clients = Client.objects.all()
     context = {"clients": clients}
     return render(request, "shop_app/clients.html", context=context)
-    # context = "<br>".join(str(client) + "<br>" for client in clients)
-    # return HttpResponse(context)
 
 
 def get_client_goods(request, client_id: int, days: int):
@@ -114,3 +117,16 @@ def edit_good_id_in_order(request, order_id: int, good_id: int, good_id_new: int
                 return HttpResponse(f"Товар {good_id} в заказе {order_id} не найден")
     else:
         return HttpResponse(f"Заказ {order_id} не найден")
+
+
+def add_good(request):
+    if request.method == "POST":
+        form = GoodForm(request.POST, request.FILES)
+        if form.is_valid():
+            good = Good.objects.create(**form.cleaned_data)
+            logger.info(f"В базу данных введен товар: {good.__str__()}")
+            good.save()
+            return HttpResponse(f"Товар сохранен: {good.__str__()}")
+    else:
+        form = GoodForm()
+    return render(request, "shop_app/good_form.html", {"form": form})

@@ -9,4 +9,6 @@ urlpatterns = [
     path("show_coins/<int:n>", views.show_coins, name="show_coins"),
     path("articles/<int:author_id>", views.get_articles, name="articles"),
     path("detail/<int:article_id>", views.detail_article, name="detail_article"),
+    path("games/", views.choice_game, name="choice_game"),
+    path("add_author/", views.add_author, name="add_author"),
 ]

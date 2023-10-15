@@ -4,6 +4,7 @@ import logging
 
 from django.shortcuts import render
 from game_app.models import Coin, Article, Author, Comment
+from .forms import GamesForm, AddAuthorForm
 
 logger = logging.getLogger(__name__)
 
@@ -36,22 +37,28 @@ def show_coins(request, n: int):
     return HttpResponse(f"{Coin.counter(n)}")
 
 
-def cube(request):
-    cube_value = random.randint(CUBE_MIN, CUBE_MAX)
-    logger.info(f"Кубик выпал стороной: {cube_value}")
-    return HttpResponse(cube_value)
+def cube(request, count: int):
+    result = []
+    for _ in range(count):
+        response = random.randint(CUBE_MIN, CUBE_MAX)
+        result.append(response)
+    context = {"result": result}
+    return render(request, "game_app/index.html", context=context)
 
 
-def random_number(request):
-    number = random.randint(MIN_NUMBER, MAX_NUMBER)
-    logger.info(f"Случайное число от {MIN_NUMBER} до {MAX_NUMBER}: {number}")
-    return HttpResponse(number)
+def random_number(request, count: int):
+    result = []
+    for _ in range(count):
+        response = random.randint(MIN_NUMBER, MAX_NUMBER)
+        result.append(response)
+    context = {"result": result}
+    return render(request, "game_app/index.html", context=context)
 
 
 def get_articles(request, author_id: int):
     author = Author.objects.get(id=author_id)
     articles = Article.objects.filter(author_id=author.id)
-    context = {"articles": articles}
+    context = {"title": f"Автор: {author.fullname()}", "articles": articles}
     return render(request, "game_app/article.html", context=context)
 
 
@@ -62,3 +69,48 @@ def detail_article(request, article_id: int):
     article.save()
     context = {"article": article, "comments": comments}
     return render(request, "game_app/detail.html", context=context)
+
+
+def choice_game(request):
+    if request.method == "POST":
+        form = GamesForm(request.POST)
+        if form.is_valid():
+            game = form.cleaned_data["game"]
+            count = form.cleaned_data["count"]
+            match game:
+                case "c":
+                    return eagle(request, count)
+                case "d":
+                    return cube(request, count)
+                case "r":
+                    return random_number(request, count)
+    else:
+        form = GamesForm()
+
+    context = {"form": form}
+    return render(request, "game_app/games.html", context=context)
+
+
+def add_author(request):
+    if request.method == "POST":
+        form = AddAuthorForm(request.POST)
+        if form.is_valid():
+            # firstname = form.cleaned_data["firstname"]
+            # lastname = form.cleaned_data["lastname"]
+            # email = form.cleaned_data["email"]
+            # biography = form.cleaned_data["biography"]
+            # birthdate = form.cleaned_data["birthdate"]
+            author = Author.objects.create(**form.cleaned_data)
+            #     firstname=firstname,
+            #     lastname=lastname,
+            #     email=email,
+            #     biography=biography,
+            #     birthdate=birthdate,
+            # )
+            author.save()
+            return get_articles(request, author.pk)
+    else:
+        form = AddAuthorForm()
+
+    context = {"form": form}
+    return render(request, "game_app/add_author.html", context=context)
