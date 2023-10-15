@@ -16,8 +16,8 @@ class Good(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
     image = models.ImageField(upload_to="images_goods/")
-    price = models.DecimalField(max_digits=10, decimal_places=2)
-    amount = models.IntegerField()
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    amount = models.IntegerField(default=0)
     create_at = models.DateField(auto_now_add=True)
 
     def __str__(self):
@@ -38,4 +38,4 @@ class Order(models.Model):
         return [good.__str__() for good in self.goods.all()]
 
     def __str__(self):
-        return f"{self.client} {self.get_goods} {self.total_price} {self.create_at}"
+        return f"{self.client} {self.get_goods()} {self.total_price} {self.create_at}"
