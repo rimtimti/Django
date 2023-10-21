@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,12 +21,23 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure--uz_(!5avi2yu5oz=#7)9w@_nyw7#@4kg7&uu$*$d(@^o9#!#2"
+SECRET_KEY = os.getenv("SECRET_KEY")
+
+# SECRET_KEY = "django-insecure--uz_(!5avi2yu5oz=#7)9w@_nyw7#@4kg7&uu$*$d(@^o9#!#2"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
+
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
+STATIC_ROOT = BASE_DIR / "static/"
 
 ALLOWED_HOSTS = []
+INTERNAL_IPS = [
+    "127.0.0.1",
+    "rimtimti.pythonanywhere.com",
+]
 
 
 # Application definition
@@ -40,9 +52,11 @@ INSTALLED_APPS = [
     "blog_app",
     "game_app",
     "shop_app",
+    "debug_toolbar",
 ]
 
 MIDDLEWARE = [
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -57,7 +71,9 @@ ROOT_URLCONF = "django_project.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [
+            BASE_DIR / "templates",
+        ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -78,8 +94,17 @@ WSGI_APPLICATION = "django_project.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        # "ENGINE": "django.db.backends.sqlite3",
+        # "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": "rimtimti$default",
+        "USER": "rimtimti",
+        "PASSWORD": os.getenv("MYSQL_PASSWORD"),
+        "HOST": "rimtimti.mysql.pythonanywhere-services.com",
+        "OPTIONS": {
+            "init_command": "SET NAMES 'utf8mb4';" "SET sql_mode='STRICT_TRANS_TABLES'",
+            "charset": "utf8mb4",
+        },
     }
 }
 
@@ -119,6 +144,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = "static/"
+STATIC_ROOT = BASE_DIR / "static/"
 
 MEDIA_URL = "/media/"
 
