@@ -33,7 +33,10 @@ CSRF_COOKIE_SECURE = True
 
 STATIC_ROOT = BASE_DIR / "static/"
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "rimtimti.pythonanywhere.com",
+]
 INTERNAL_IPS = [
     "127.0.0.1",
     "rimtimti.pythonanywhere.com",
